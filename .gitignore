@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+*.env
+
+# PyInstaller
+*.spec
+dist/
+build/
+
+# macOS / Linux / Windows system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# VSCode
+.vscode/
+
+# PySide Designer generated ui files (if any)
+*.ui.py
+
+# Logs
+*.log
+
+# Local config / cache
+.stodolist/

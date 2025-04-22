@@ -1,0 +1,21 @@
+QMainWindow {
+    background-color: #f8f8f8;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+
+QLineEdit, QComboBox, QDateTimeEdit {
+    border: 1px solid #ccc;
+    padding: 4px;
+    border-radius: 4px;
+}
