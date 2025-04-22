@@ -1,1 +1,1 @@
-sweetcool.qss
+wasteland.qss

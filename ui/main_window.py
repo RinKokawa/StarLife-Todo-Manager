@@ -1,5 +1,8 @@
 
 import os
+from tkinter import Menu
+from PySide6.QtWidgets import QMenu
+
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLineEdit, QListWidget, QListWidgetItem,
@@ -23,11 +26,14 @@ class MainWindow(QMainWindow):
         self.tasks = []
         self.statuses = load_statuses()
         self.current_filter = "all"
+        self._resize_margin = 5
+        self._resizing = False
+        self._resize_direction = None
         self.init_ui()
         self.load()
 
     def init_ui(self):
-        self._init_menu()
+        # self._init_menu()  # 菜单栏已被隐藏
         central_widget = QWidget()
         full_layout = QVBoxLayout()
         full_layout.setContentsMargins(0, 0, 0, 0)
@@ -51,14 +57,23 @@ class MainWindow(QMainWindow):
         title = QLabel("🌟 StarLife Todo Manager")
         title.setStyleSheet("font-weight: bold;")
 
+        layout.addWidget(title)
+        layout.addStretch()
+
+        # 新增：设置按钮
+        btn_settings = QPushButton("⚙")
+        btn_settings.setFixedWidth(30)
+        btn_settings.clicked.connect(self.open_settings_menu)
+
         btn_min = QPushButton("—")
+        btn_min.setFixedWidth(30)
         btn_min.clicked.connect(self.showMinimized)
 
         btn_close = QPushButton("×")
+        btn_close.setFixedWidth(30)
         btn_close.clicked.connect(self.close)
 
-        layout.addWidget(title)
-        layout.addStretch()
+        layout.addWidget(btn_settings)
         layout.addWidget(btn_min)
         layout.addWidget(btn_close)
 
@@ -117,15 +132,15 @@ class MainWindow(QMainWindow):
             self.move(self.pos() + delta)
             self._drag_pos = event.globalPosition().toPoint()
 
-    def _init_menu(self):
-        menubar = self.menuBar()
-        settings_menu = menubar.addMenu("设置")
-        lang_action = QAction("语言", self)
-        lang_action.triggered.connect(self.open_language_dialog)
-        settings_menu.addAction(lang_action)
-        style_action = QAction("样式设置", self)
-        style_action.triggered.connect(self.open_style_dialog)
-        settings_menu.addAction(style_action)
+# def _init_menu(self):  # 已弃用
+        # menubar = self.menuBar()  # 已弃用
+
+
+
+
+
+
+
 
     def open_style_dialog(self):
         dlg = StyleSettingsDialog(self)
@@ -189,3 +204,98 @@ class MainWindow(QMainWindow):
     def load(self):
         self.tasks = load_tasks()
         self.refresh_list()
+
+    def mouseReleaseEvent(self, event):
+        self._resizing = False
+        self._resize_direction = None
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._drag_pos = event.globalPosition().toPoint()
+            self._resize_direction = self._get_resize_direction(event.pos())
+            self._resizing = self._resize_direction is not None
+
+    def mouseMoveEvent(self, event):
+        if self._resizing:
+            self._resize_window(event.globalPosition().toPoint())
+        else:
+            if event.buttons() == Qt.LeftButton and hasattr(self, "_drag_pos"):
+                delta = event.globalPosition().toPoint() - self._drag_pos
+                self.move(self.pos() + delta)
+                self._drag_pos = event.globalPosition().toPoint()
+            else:
+                direction = self._get_resize_direction(event.pos())
+                if direction:
+                    cursors = {
+                        "left": Qt.SizeHorCursor,
+                        "right": Qt.SizeHorCursor,
+                        "top": Qt.SizeVerCursor,
+                        "bottom": Qt.SizeVerCursor,
+                        "top_left": Qt.SizeFDiagCursor,
+                        "top_right": Qt.SizeBDiagCursor,
+                        "bottom_left": Qt.SizeBDiagCursor,
+                        "bottom_right": Qt.SizeFDiagCursor,
+                    }
+                    self.setCursor(cursors[direction])
+                else:
+                    self.setCursor(Qt.ArrowCursor)
+
+    def _get_resize_direction(self, pos):
+        x, y, w, h, m = pos.x(), pos.y(), self.width(), self.height(), self._resize_margin
+        if x < m and y < m: return "top_left"
+        elif x > w - m and y < m: return "top_right"
+        elif x < m and y > h - m: return "bottom_left"
+        elif x > w - m and y > h - m: return "bottom_right"
+        elif x < m: return "left"
+        elif x > w - m: return "right"
+        elif y < m: return "top"
+        elif y > h - m: return "bottom"
+        return None
+
+    def _resize_window(self, global_pos):
+        rect = self.geometry()
+        diff = global_pos - self.mapToGlobal(QPoint(0, 0))
+        if self._resize_direction == "right":
+            rect.setWidth(diff.x())
+        elif self._resize_direction == "bottom":
+            rect.setHeight(diff.y())
+        elif self._resize_direction == "bottom_right":
+            rect.setWidth(diff.x())
+            rect.setHeight(diff.y())
+        elif self._resize_direction == "left":
+            dx = diff.x()
+            rect.setX(rect.x() + dx)
+            rect.setWidth(rect.width() - dx)
+        elif self._resize_direction == "top":
+            dy = diff.y()
+            rect.setY(rect.y() + dy)
+            rect.setHeight(rect.height() - dy)
+        elif self._resize_direction == "top_left":
+            dx, dy = diff.x(), diff.y()
+            rect.setX(rect.x() + dx)
+            rect.setWidth(rect.width() - dx)
+            rect.setY(rect.y() + dy)
+            rect.setHeight(rect.height() - dy)
+        elif self._resize_direction == "top_right":
+            dy = diff.y()
+            rect.setY(rect.y() + dy)
+            rect.setHeight(rect.height() - dy)
+            rect.setWidth(diff.x())
+        elif self._resize_direction == "bottom_left":
+            dx = diff.x()
+            rect.setX(rect.x() + dx)
+            rect.setWidth(rect.width() - dx)
+            rect.setHeight(diff.y())
+        self.setGeometry(rect)
+
+
+    def open_settings_menu(self):
+        menu = QMenu(self)
+        action_lang = QAction("语言设置", self)
+        action_lang.triggered.connect(self.open_language_dialog)
+        action_style = QAction("样式设置", self)
+        action_style.triggered.connect(self.open_style_dialog)
+        menu.addAction(action_lang)
+        menu.addAction(action_style)
+        button = self.sender()
+        menu.exec(button.mapToGlobal(button.rect().bottomLeft()))
