@@ -1,9 +1,23 @@
 # core/config.py
 import json
+import os
 from pathlib import Path
+from PySide6.QtWidgets import QApplication
+
 
 DATA_PATH = Path.home() / ".stodolist"
 CONFIG_FILE = DATA_PATH / "config.json"
+
+def apply_stylesheet(app: QApplication):
+    config_path = os.path.join(os.path.dirname(__file__), "../config.txt")
+    qss_dir = os.path.join(os.path.dirname(__file__), "../assets/qss")
+    if os.path.exists(config_path):
+        with open(config_path, "r", encoding="utf-8") as f:
+            filename = f.read().strip()
+            qss_path = os.path.join(qss_dir, filename)
+            if os.path.exists(qss_path):
+                with open(qss_path, "r", encoding="utf-8") as qss_file:
+                    app.setStyleSheet(qss_file.read())
 
 def init_config():
     if not DATA_PATH.exists():

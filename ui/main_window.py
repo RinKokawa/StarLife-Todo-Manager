@@ -14,6 +14,7 @@ from core.config import load_statuses, set_language
 from ui.widgets.task_item_widget import TaskItemWidget
 from ui.dialogs.edit_task_dialog import EditTaskDialog
 from ui.dialogs.language_dialog import LanguageDialog
+from ui.dialogs.style_settings_dialog import StyleSettingsDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -81,6 +82,13 @@ class MainWindow(QMainWindow):
         # ✅ 默认加载样式
         self.apply_stylesheet("assets/style.qss")
 
+
+
+    # 方法
+    def open_style_dialog(self):
+        dlg = StyleSettingsDialog(self)
+        dlg.exec()
+
     def _init_menu(self):
         menubar = self.menuBar()
         settings_menu = menubar.addMenu("设置")
@@ -89,9 +97,10 @@ class MainWindow(QMainWindow):
         lang_action.triggered.connect(self.open_language_dialog)
         settings_menu.addAction(lang_action)
 
-        style_action = QAction("加载样式表", self)
-        style_action.triggered.connect(self.load_stylesheet_dialog)
+        style_action = QAction("样式设置", self)
+        style_action.triggered.connect(self.open_style_dialog)
         settings_menu.addAction(style_action)
+
 
     def open_language_dialog(self):
         dialog = LanguageDialog()
