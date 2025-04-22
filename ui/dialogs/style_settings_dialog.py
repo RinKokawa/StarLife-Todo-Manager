@@ -1,5 +1,7 @@
 # ui/dialogs/style_settings_dialog.py
+import subprocess
 import os
+import sys
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox
 
 class StyleSettingsDialog(QDialog):
@@ -30,13 +32,19 @@ class StyleSettingsDialog(QDialog):
             return []
         return [f for f in os.listdir(self.qss_dir) if f.endswith(".qss")]
 
+
     def apply_selected_style(self):
         selected = self.combo.currentText()
         config_path = os.path.join(os.path.dirname(__file__), "../../config.txt")
         try:
             with open(config_path, "w", encoding="utf-8") as f:
                 f.write(selected)
-            QMessageBox.information(self, "成功", f"已应用样式：{selected}\n请重新启动应用以生效。")
-            self.accept()
+
+            QMessageBox.information(self, "成功", f"已应用样式：{selected}，即将重启程序。")
+            
+            # ✅ 启动一个新进程再退出
+            subprocess.Popen([sys.executable] + sys.argv)
+            sys.exit()
+
         except Exception as e:
             QMessageBox.critical(self, "失败", f"写入配置失败：{e}")
