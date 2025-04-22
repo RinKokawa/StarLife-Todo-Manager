@@ -1,24 +1,20 @@
 
-QWidget {
-    background-color: #0f0f0f;
-    color: #00fff7;
-    font-family: "Consolas";
-    font-size: 14px;
+#TitleBar {
+    background-color: #1a0033;
+    border-bottom: 2px solid #ff00ff;
 }
-QPushButton {
-    background-color: #00fff7;
-    color: #0f0f0f;
-    border: 2px solid #ff00ff;
-    border-radius: 8px;
-    padding: 6px 12px;
+#TitleBar QLabel {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff00ff;
 }
-QPushButton:hover {
-    background-color: #ff00ff;
-    color: #00fff7;
+#TitleBar QPushButton {
+    background: transparent;
+    color: #ff00ff;
+    border: none;
+    font-size: 16px;
+    padding: 0 8px;
 }
-QComboBox {
-    background-color: #1a1a1a;
-    border: 2px solid #00fff7;
-    color: #00fff7;
-    padding: 4px;
+#TitleBar QPushButton:hover {
+    background-color: rgba(255, 0, 255, 0.2);
 }

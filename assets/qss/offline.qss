@@ -1,0 +1,39 @@
+
+QWidget {
+    background-color: #fafafa;
+    color: #555555;
+    font-family: "Arial";
+    font-size: 14px;
+}
+QPushButton {
+    background-color: #cccccc;
+    color: #333333;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+}
+QPushButton:hover {
+    background-color: #aaaaaa;
+}
+QComboBox {
+    background-color: #eeeeee;
+    color: #333333;
+    border: 1px solid #aaaaaa;
+    padding: 4px;
+}
+QMenuBar {
+    background-color: #dddddd;
+    color: #333333;
+}
+QMenuBar::item:selected {
+    background-color: #bbbbbb;
+}
+QMenu {
+    background-color: #eeeeee;
+    color: #333333;
+    border: 1px solid #aaaaaa;
+}
+QMenu::item:selected {
+    background-color: #aaaaaa;
+    color: white;
+}

@@ -1,21 +1,22 @@
 
 #TitleBar {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-        stop:0 #ffe6f0, stop:1 #d1c4e9);
-    border-bottom: 2px dashed #f48fb1;
+        stop:0 #ffb6f1, stop:1 #c3a9ff);
+    border-bottom: 2px solid #f5d0ff;
+    color: white;
 }
 #TitleBar QLabel {
     font-size: 16px;
     font-weight: bold;
-    color: #6a1b9a;
+    color: white;
 }
 #TitleBar QPushButton {
     background: transparent;
-    color: #6a1b9a;
+    color: white;
     border: none;
     font-size: 16px;
     padding: 0 8px;
 }
 #TitleBar QPushButton:hover {
-    background-color: rgba(255, 182, 193, 0.3);
+    background-color: rgba(255, 255, 255, 0.3);
 }
